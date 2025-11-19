@@ -1,98 +1,43 @@
 export const executeInstructions = (position, instructions) => {
-  let pos = parsePosition(position);
-  for(const char of instructions) {
-    if (char === "M") {
-      pos = moveRover(pos)
-    }
-    else {
-      pos.dir = findNextDirection(pos.dir, char)
-    }
-  }
-  return `${pos.row} ${pos.col} ${pos.dir}`;
-};
-////////////////////////////////////////////////
-const isMove = (command) => command === "M";
+  let { row, col, dir } = parsePositionToObject(position);
 
-// export const executeInstructions1 = (position, instructions) => {
-//   const pos = parsePosition(position);
-//   instructions.split("").forEach(command => {
-//     if (isMove(command)) {
-//       pos = moveRover2[pos.dir];
-//     }
-//     pos.dir = findNextDirection2[pos.dir](command);
-
-//   });
-//   return `${pos.row} ${pos.col} ${pos.dir}`;
-// }
-
-export const executeInstructions1 = (position, instructions) => {
-  let pos = parsePosition(position);
-  instructions.split("").forEach(command => {
-    instructionSheet[command][pos.dir](pos)
+  instructions.split("").forEach((command) => {
+    ({ row, col, dir } = instructionSheet[command][dir]({ row, col, dir }));
   });
-  return `${pos.row} ${pos.col} ${pos.dir}`;
-}
+  return `${row} ${col} ${dir}`;
+};
 
-const findNextDirectionRight = {
-  N: (pos) => {pos.dir = "E"},
-  S: (pos) => {pos.dir = "W"},
-  E: (pos) => {pos.dir = "S"},
-  W: (pos) => {pos.dir = "N"}
-}
+const turnRight = {
+  N: ({ row, col }) => ({ row, col, dir: "E" }),
+  S: ({ row, col }) => ({ row, col, dir: "W" }),
+  E: ({ row, col }) => ({ row, col, dir: "S" }),
+  W: ({ row, col }) => ({ row, col, dir: "N" }),
+};
 
-const findNextDirectionLeft = {
-  N: (pos) => {pos.dir = "W"},
-  S: (pos) => {pos.dir = "E"},
-  E: (pos) => {pos.dir = "N"},
-  W: (pos) => {pos.dir = "S"}
-}
+const turnLeft = {
+  N: ({ row, col }) => ({ row, col, dir: "W" }),
+  S: ({ row, col }) => ({ row, col, dir: "E" }),
+  E: ({ row, col }) => ({ row, col, dir: "N" }),
+  W: ({ row, col }) => ({ row, col, dir: "S" }),
+};
 
 const moveRover2 = {
-  N: (pos) => {pos.col += 1},
-  S: (pos) => {pos.col -= 1},
-  E: (pos) => {pos.row += 1},
-  W: (pos) => {pos.row -=  1},
-  }
+  N: ({ row, col, dir }) => ({ row, col: col + 1, dir }),
+  S: ({ row, col, dir }) => ({ row, col: col - 1, dir }),
+  E: ({ row, col, dir }) => ({ row: row + 1, col, dir }),
+  W: ({ row, col, dir }) => ({ row: row - 1, col, dir }),
+};
 
 const instructionSheet = {
   M: moveRover2,
-  L: findNextDirectionLeft,
-  R: findNextDirectionRight
-}
-
-//////////////////////////
-
-
-export const parsePosition = (position) => {
-  const pos = position;
-  const row = parseInt(pos.slice(0, pos.indexOf(" ")));
-  const col = parseInt(
-    pos.slice(pos.indexOf(" ") + 1, pos.lastIndexOf(" ")),
-  );
-  const dir = pos.slice(pos.lastIndexOf(" ") + 1);
-  return { row, col, dir };
+  L: turnLeft,
+  R: turnRight,
 };
 
-export const findNextDirection = (dir, instruction) => {
-  if (!"LR".includes(instruction)){
-    return dir
-  }
-  let nextDirection = ""
-  switch (dir) {
-    case "N": nextDirection = instruction === "R" ? "E" : "W"; break;
-    case "S": nextDirection = instruction === "R" ? "W" : "E"; break;
-    case "E": nextDirection = instruction === "R" ? "S" : "N"; break;
-    case "W": nextDirection = instruction === "R" ? "N" : "S"; break;
-  }
-  return nextDirection
-}
-
-export const moveRover = (pos) => {
-  switch (pos.dir) {
-    case "N": pos.col += 1; break;
-    case "S": pos.col -= 1; break;
-    case "E": pos.row += 1; break;
-    case "W": pos.row -=  1; break;
-  }
-  return pos;
-}
+export const parsePositionToObject = (position) => {
+  const pos = position.split(" ");
+  const row = parseInt(pos[0]);
+  const col = parseInt(pos[1]);
+  const dir = pos[2];
+  return { row, col, dir };
+};

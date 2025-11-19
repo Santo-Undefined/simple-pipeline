@@ -20,22 +20,7 @@ Deno.test("Move one step", () => {
 })
 
 Deno.test("position parse check", () => {
-  assertEquals(fn.parsePosition("0 0 N"), { row: 0, col: 0, dir: "N" });
-  assertEquals(fn.parsePosition("-2 3 E"), { row: -2, col: 3, dir: "E" });
-  assertEquals(fn.parsePosition("-2 -3 E"), { row: -2, col: -3, dir: "E" });
+  assertEquals(fn.parsePositionToObject("0 0 N"), { row: 0, col: 0, dir: "N" });
+  assertEquals(fn.parsePositionToObject("-2 3 E"), { row: -2, col: 3, dir: "E" });
+  assertEquals(fn.parsePositionToObject("-2 -3 E"), { row: -2, col: -3, dir: "E" });
 });
-
-Deno.test("check direction update", () => {
-  assertEquals(fn.findNextDirection("N", "R"),"E")
-  assertEquals(fn.findNextDirection("S", "L"),"E")
-});
-
-Deno.test("Move according to direction", () => {
-  assertEquals(fn.moveRover({ row: 0, col: 0, dir: "N" }), { row: 0, col: 1, dir: "N" })
-  assertEquals(fn.moveRover({ row: 1, col: 1, dir: "N" }), { row: 1, col: 2, dir: "N" })
-  assertEquals(fn.moveRover({ row: 0, col: 0, dir: "S" }), { row: 0, col: -1, dir: "S" })
-})
-
-Deno.test("modifying thing", () => {
-  assertEquals(fn.executeInstructions1('0 0 N', 'L'), '0 0 W');
-})
