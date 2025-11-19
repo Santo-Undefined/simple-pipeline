@@ -1,7 +1,12 @@
 export const executeInstructions = (position, instructions) => {
-  const pos = parsePosition(position);
+  let pos = parsePosition(position);
   for(const char of instructions) {
-    pos.dir = findRelavtiveDirectionsToMove(pos.dir, char)
+    if (char === "M") {
+      pos = moveRover(pos)
+    }
+    else {
+      pos.dir = findRelavtiveDirectionsToMove(pos.dir, char)
+    }
   }
   return `${pos.row} ${pos.col} ${pos.dir}`
 };
