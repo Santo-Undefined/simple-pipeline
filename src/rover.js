@@ -5,11 +5,47 @@ export const executeInstructions = (position, instructions) => {
       pos = moveRover(pos)
     }
     else {
-      pos.dir = findRelavtiveDirectionsToMove(pos.dir, char)
+      pos.dir = findNextDirection(pos.dir, char)
     }
   }
-  return `${pos.row} ${pos.col} ${pos.dir}`
+  return `${pos.row} ${pos.col} ${pos.dir}`;
 };
+////////////////////////////////////////////////
+const isMove = (command) => command === "M";
+
+export const executeInstructions1 = (position, instructions) => {
+  let pos = parsePosition(position);
+  instructions.split("").forEach(command => {
+    pos = isMove(command) ? moveRover1(pos) : findNextDirection1(pos, command);
+  });
+  return `${pos.row} ${pos.col} ${pos.dir}`;
+}
+
+export const findNextDirection1 = (pos, instruction) => {
+  if (!"LR".includes(instruction)){
+    return pos
+  }
+  const curretDirection = pos.dir;
+  switch (curretDirection) {
+    case "N": pos.dir = instruction === "R" ? "E" : "W"; break;
+    case "S": pos.dir = instruction === "R" ? "W" : "E"; break;
+    case "E": pos.dir = instruction === "R" ? "S" : "N"; break;
+    case "W": pos.dir = instruction === "R" ? "N" : "S"; break;
+  }
+  return pos;
+}
+
+export const moveRover1 = (pos) => {
+  switch (pos.dir) {
+    case "N": pos.col += 1; break;
+    case "S": pos.col -= 1; break;
+    case "E": pos.row += 1; break;
+    case "W": pos.row -=  1; break;
+  }
+  return pos;
+}
+//////////////////////////
+
 
 export const parsePosition = (position) => {
   const pos = position;
@@ -21,7 +57,7 @@ export const parsePosition = (position) => {
   return { row, col, dir };
 };
 
-export const findRelavtiveDirectionsToMove = (dir, instruction) => {
+export const findNextDirection = (dir, instruction) => {
   if (!"LR".includes(instruction)){
     return dir
   }

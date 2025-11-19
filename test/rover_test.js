@@ -26,12 +26,16 @@ Deno.test("position parse check", () => {
 });
 
 Deno.test("check direction update", () => {
-  assertEquals(fn.findRelavtiveDirectionsToMove("N", "R"),"E")
-  assertEquals(fn.findRelavtiveDirectionsToMove("S", "L"),"E")
+  assertEquals(fn.findNextDirection("N", "R"),"E")
+  assertEquals(fn.findNextDirection("S", "L"),"E")
 });
 
 Deno.test("Move according to direction", () => {
   assertEquals(fn.moveRover({ row: 0, col: 0, dir: "N" }), { row: 0, col: 1, dir: "N" })
   assertEquals(fn.moveRover({ row: 1, col: 1, dir: "N" }), { row: 1, col: 2, dir: "N" })
   assertEquals(fn.moveRover({ row: 0, col: 0, dir: "S" }), { row: 0, col: -1, dir: "S" })
+})
+
+Deno.test("modifying thing", () => {
+  assertEquals(fn.executeInstructions1('0 0 N', 'L'), '0 0 W');
 })
