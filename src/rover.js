@@ -13,37 +13,53 @@ export const executeInstructions = (position, instructions) => {
 ////////////////////////////////////////////////
 const isMove = (command) => command === "M";
 
+// export const executeInstructions1 = (position, instructions) => {
+//   const pos = parsePosition(position);
+//   instructions.split("").forEach(command => {
+//     if (isMove(command)) {
+//       pos = moveRover2[pos.dir];
+//     }
+//     pos.dir = findNextDirection2[pos.dir](command);
+
+//   });
+//   return `${pos.row} ${pos.col} ${pos.dir}`;
+// }
+
 export const executeInstructions1 = (position, instructions) => {
   let pos = parsePosition(position);
   instructions.split("").forEach(command => {
-    pos = isMove(command) ? moveRover1(pos) : findNextDirection1(pos, command);
+    instructionSheet[command][pos.dir](pos)
   });
   return `${pos.row} ${pos.col} ${pos.dir}`;
 }
 
-export const findNextDirection1 = (pos, instruction) => {
-  if (!"LR".includes(instruction)){
-    return pos
-  }
-  const curretDirection = pos.dir;
-  switch (curretDirection) {
-    case "N": pos.dir = instruction === "R" ? "E" : "W"; break;
-    case "S": pos.dir = instruction === "R" ? "W" : "E"; break;
-    case "E": pos.dir = instruction === "R" ? "S" : "N"; break;
-    case "W": pos.dir = instruction === "R" ? "N" : "S"; break;
-  }
-  return pos;
+const findNextDirectionRight = {
+  N: (pos) => {pos.dir = "E"},
+  S: (pos) => {pos.dir = "W"},
+  E: (pos) => {pos.dir = "S"},
+  W: (pos) => {pos.dir = "N"}
 }
 
-export const moveRover1 = (pos) => {
-  switch (pos.dir) {
-    case "N": pos.col += 1; break;
-    case "S": pos.col -= 1; break;
-    case "E": pos.row += 1; break;
-    case "W": pos.row -=  1; break;
-  }
-  return pos;
+const findNextDirectionLeft = {
+  N: (pos) => {pos.dir = "W"},
+  S: (pos) => {pos.dir = "E"},
+  E: (pos) => {pos.dir = "N"},
+  W: (pos) => {pos.dir = "S"}
 }
+
+const moveRover2 = {
+  N: (pos) => {pos.col += 1},
+  S: (pos) => {pos.col -= 1},
+  E: (pos) => {pos.row += 1},
+  W: (pos) => {pos.row -=  1},
+  }
+
+const instructionSheet = {
+  M: moveRover2,
+  L: findNextDirectionLeft,
+  R: findNextDirectionRight
+}
+
 //////////////////////////
 
 
