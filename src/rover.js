@@ -1,37 +1,32 @@
-export const executeInstructions = (position, instructions) => {
-  let { row, col, dir } = parsePositionToObject(position);
-
-  instructions.split("").forEach((command) => {
-    ({ row, col, dir } = instructionSheet[command][dir]({ row, col, dir }));
-  });
-  return `${row} ${col} ${dir}`;
+const dgb = (x) => {
+  console.log("Debug prob", x)
+  return x
 };
 
-const turnRight = {
-  N: ({ row, col }) => ({ row, col, dir: "E" }),
-  S: ({ row, col }) => ({ row, col, dir: "W" }),
-  E: ({ row, col }) => ({ row, col, dir: "S" }),
-  W: ({ row, col }) => ({ row, col, dir: "N" }),
+const turn = function (direction, { row, col, dir }) {
+  const directions = ["N", "E", "S", "W", "N"];
+
+  return direction === "R" ?
+    { row, col, dir: directions[directions.indexOf(dir) + 1]} :
+    { row, col, dir: directions[directions.lastIndexOf(dir) - 1]};
 };
 
-const turnLeft = {
-  N: ({ row, col }) => ({ row, col, dir: "W" }),
-  S: ({ row, col }) => ({ row, col, dir: "E" }),
-  E: ({ row, col }) => ({ row, col, dir: "N" }),
-  W: ({ row, col }) => ({ row, col, dir: "S" }),
+const moveRover2 = function ({ row, col, dir }) {
+  const newPos = move[dir]({row, col});
+  return { row: newPos.row, col: newPos.col, dir};
 };
 
-const moveRover2 = {
-  N: ({ row, col, dir }) => ({ row, col: col + 1, dir }),
-  S: ({ row, col, dir }) => ({ row, col: col - 1, dir }),
-  E: ({ row, col, dir }) => ({ row: row + 1, col, dir }),
-  W: ({ row, col, dir }) => ({ row: row - 1, col, dir }),
+const move = {
+  N: ({ row, col }) => ({ row, col: col + 1 }),
+  S: ({ row, col }) => ({ row, col: col - 1 }),
+  E: ({ row, col }) => ({ row: row + 1, col }),
+  W: ({ row, col }) => ({ row: row - 1, col }),
 };
 
 const instructionSheet = {
   M: moveRover2,
-  L: turnLeft,
-  R: turnRight,
+  L: turn.bind(null, "L"),
+  R: turn.bind(null, "R"),
 };
 
 export const parsePositionToObject = (position) => {
@@ -41,3 +36,14 @@ export const parsePositionToObject = (position) => {
   const dir = pos[2];
   return { row, col, dir };
 };
+
+export const executeInstructions = (position, instructions) => {
+  let { row, col, dir } = parsePositionToObject(position);
+
+  instructions.split("").forEach((command) => {
+    ({ row, col, dir } = instructionSheet[command]({ row, col, dir }));
+  });
+  return `${row} ${col} ${dir}`;
+};
+
+console.log(executeInstructions('0 0 E', 'M'));
