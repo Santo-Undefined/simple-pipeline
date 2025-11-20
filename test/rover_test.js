@@ -30,11 +30,16 @@ Deno.test("Move", () => {
   assertEquals(fn.executeInstructions("0 0 N", "M", "1 1"), "0 1 N")
   assertEquals(fn.executeInstructions("0 0 N", "MM", "2 2"), "0 2 N")
   assertEquals(fn.executeInstructions("1 1 E", "MMLMMM", "5 5"), "3 4 N")
+  assertEquals(fn.executeInstructions("0 0 N", "LMRM", ""), "-1 1 N")
+  assertEquals(fn.executeInstructions("2 2 N", "MMMRMM"), "4 5 E")
+
 })
 
 Deno.test("Move out of bounds", () => {
-  assertEquals(fn.executeInstructions("0 0 N", "LMRM", ""), "0 0 W RIP")
   assertEquals(fn.executeInstructions("5 5 N", "M", "5 5"), "5 5 N RIP")
   assertEquals(fn.executeInstructions("0 0 S", "M", "5 5"), "0 0 S RIP")
   assertEquals(fn.executeInstructions("2 2 N", "MMMRMM", "4 4"), "2 4 N RIP")
+  assertEquals(fn.executeInstructions("2 2 N", "MMMRMM", "0 0"), "2 2 N RIP")
+  assertEquals(fn.executeInstructions("2 2 N", "MMMRMM", ""), "4 5 E")
+  assertEquals(fn.executeInstructions("0 0 S", "M"), "0 -1 S");
 })

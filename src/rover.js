@@ -53,9 +53,14 @@ const parseFinalPosition = (pos, status = "") => {
 
 const isWithInBounds = (minVal, maxVal, val) => val <= maxVal && val >= minVal;
 
+const isLessThanInfinity = (plateau) => {
+  return plateau.maxX < Infinity && plateau.maxY < Infinity;
+}
+
 export const isSafe = (plateau, presentPosition) => {
-  const xAxis = isWithInBounds(0, plateau.maxX, presentPosition.row);
-  const yAxis = isWithInBounds(0, plateau.maxY, presentPosition.col);
+  const startVal = isLessThanInfinity(plateau) ? 0 : -Infinity;
+  const xAxis = isWithInBounds(startVal, plateau.maxX, presentPosition.row);
+  const yAxis = isWithInBounds(startVal, plateau.maxY, presentPosition.col);
   return xAxis && yAxis;
 };
 
