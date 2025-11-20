@@ -16,11 +16,11 @@ export const parsePlateauPosition = (position = "") => {
   return { maxX, maxY };
 };
 
-const turn = function (offset, position) {
+const turn = function (position, offset) {
   const directions = ["N", "E", "S", "W", "N"];
   const index = (directions.indexOf(position.dir) + offset) % directions.length;
-  position.dir = directions[index];
-  return position;
+  const dir = directions[index];
+  return { x: position.x, y: position.y, dir: dir };
 };
 
 const move = {
@@ -30,24 +30,23 @@ const move = {
   W: (x, y) => ({ x: x - 1, y }),
 };
 
-const moveRover = function ({ x, y, dir }) {
+const moveRover = ({ x, y, dir }) => {
   const nextPosition = move[dir](x, y);
-
   return { ...nextPosition, dir };
 };
 
-const executeInstruction = {
-  M: moveRover,
-  L: turn.bind(null, 3),
-  R: turn.bind(null, 1),
+const performInstruction = {
+  M: (position) => moveRover(position),
+  L: (position) => turn(position, 3),
+  R: (position) => turn(position, 1),
 };
 
-const parseFinalPosition = (position, status = false) => {
-  const roverCondition = status ? " RIP" : "";
+const parseFinalPosition = (position, isOffBounds) => {
+  const roverCondition = isOffBounds ? " RIP" : "";
   return `${position.x} ${position.y} ${position.dir}${roverCondition}`;
 };
 
-const isWithInBounds = (minVal, maxVal, val) => val <= maxVal && val >= minVal;
+const isWithInBounds = (min, max, val) => val <= max && val >= min;
 
 const isLessThanInfinity = (plateau) =>
   plateau.maxX < Infinity && plateau.maxY < Infinity;
@@ -65,12 +64,11 @@ export const executeInstructions = (position, instructions, plateau) => {
 
   for (const instruction of [...instructions]) {
     const lastRoverPosition = roverPosition;
-    roverPosition = executeInstruction[instruction](roverPosition);
+    roverPosition = performInstruction[instruction](roverPosition);
 
     if (!isSafe(plateauBounds, roverPosition)) {
       return parseFinalPosition(lastRoverPosition, true);
     }
   }
-
-  return parseFinalPosition(roverPosition);
+  return parseFinalPosition(roverPosition, false);
 };
