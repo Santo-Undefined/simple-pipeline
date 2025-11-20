@@ -12,6 +12,11 @@ export const parsePlateauPosition = (position = "") => {
   return { maxX: parseInt(maxX), maxY: parseInt(maxY) };
 };
 
+const parseFinalPosition = ({ x, y, dir }, isOffBounds) => {
+  const roverCondition = isOffBounds ? " RIP" : "";
+  return `${x} ${y} ${dir}${roverCondition}`;
+};
+
 const turn = (position, offset) => {
   const directions = ["N", "E", "S", "W"];
   const index = (directions.indexOf(position.dir) + offset) % directions.length;
@@ -46,20 +51,14 @@ const instructionList = () => {
 
 const performInstruction = instructionList();
 
-const parseFinalPosition = ({ x, y, dir }, isOffBounds) => {
-  const roverCondition = isOffBounds ? " RIP" : "";
-  return `${x} ${y} ${dir}${roverCondition}`;
-};
-
 const isWithInBounds = (min, max, val) => val <= max && val >= min;
-const isLessThanInfinity = ({ maxX, maxY }) =>
-  maxX < Infinity && maxY < Infinity;
+const isLessThanInfinity = (x, y) => x < Infinity && y < Infinity;
 
-export const isSafe = (plateau, presentPosition) => {
-  const startVal = isLessThanInfinity(plateau) ? 0 : -Infinity;
-  const xAxis = isWithInBounds(startVal, plateau.maxX, presentPosition.x);
-  const yAxis = isWithInBounds(startVal, plateau.maxY, presentPosition.y);
-  return xAxis && yAxis;
+export const isSafe = ({ maxX, maxY }, { x, y }) => {
+  const startVal = isLessThanInfinity(maxX, maxY) ? 0 : -Infinity;
+  const isXvalid = isWithInBounds(startVal, maxX, x);
+  const isYvalid = isWithInBounds(startVal, maxY, y);
+  return isXvalid && isYvalid;
 };
 
 export const executeInstructions = (position, instructions, plateau) => {
