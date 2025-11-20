@@ -20,7 +20,7 @@ Deno.test("Move one step", () => {
 })
 
 Deno.test("position parse check", () => {
-  assertEquals(fn.parsePositionToObject("0 0 N"), { row: 0, col: 0, dir: "N" });
-  assertEquals(fn.parsePositionToObject("-2 3 E"), { row: -2, col: 3, dir: "E" });
-  assertEquals(fn.parsePositionToObject("-2 -3 E"), { row: -2, col: -3, dir: "E" });
+  assertEquals(fn.parsePosition("0 0 N"), { row: 0, col: 0, dir: "N" });
+  assertEquals(fn.parsePosition("-2 3 E"), { row: -2, col: 3, dir: "E" });
+  assertEquals(fn.parsePosition("-2 -3 E"), { row: -2, col: -3, dir: "E" });
 });
