@@ -1,14 +1,14 @@
-export const parsePosition = (position) => {
-  const pos = position.split(" ");
-  const row = parseInt(pos[0]);
-  const col = parseInt(pos[1]);
-  const dir = pos[2];
-  return { row, col, dir };
+export const parsePosition = (initalPosition) => {
+  const position = initalPosition.split(" ");
+  const x = parseInt(position[0]);
+  const y = parseInt(position[1]);
+  const dir = position[2];
+  return { x, y, dir };
 };
 
 export const parsePlateauPosition = (position = "") => {
   if (position.length === 0) {
-    return {maxX: Infinity , maxY: Infinity};
+    return { maxX: Infinity, maxY: Infinity };
   }
   const pos = position.split(" ");
   const maxX = parseInt(pos[0]);
@@ -16,51 +16,46 @@ export const parsePlateauPosition = (position = "") => {
   return { maxX, maxY };
 };
 
-const turnR = function (pos) {
+const turn = function (offset, position) {
   const directions = ["N", "E", "S", "W", "N"];
-  pos.dir = directions[directions.indexOf(pos.dir) + 1];
-  return pos;
-};
-
-const turnL = function (pos) {
-  const directions = ["N", "W", "S", "E", "N"];
-  pos.dir = directions[directions.indexOf(pos.dir) + 1];
-  return pos;
+  const index = (directions.indexOf(position.dir) + offset) % directions.length;
+  position.dir = directions[index];
+  return position;
 };
 
 const move = {
-  N: (row, col) => ({ row, col: col + 1 }),
-  S: (row, col) => ({ row, col: col - 1 }),
-  E: (row, col) => ({ row: row + 1, col }),
-  W: (row, col) => ({ row: row - 1, col }),
+  N: (x, y) => ({ x, y: y + 1 }),
+  S: (x, y) => ({ x, y: y - 1 }),
+  E: (x, y) => ({ x: x + 1, y }),
+  W: (x, y) => ({ x: x - 1, y }),
 };
 
-const moveRover = function ({ row, col, dir }) {
-  const nextPosition = move[dir](row, col);
+const moveRover = function ({ x, y, dir }) {
+  const nextPosition = move[dir](x, y);
 
   return { ...nextPosition, dir };
 };
 
 const executeInstruction = {
   M: moveRover,
-  L: turnL,
-  R: turnR,
+  L: turn.bind(null, 3),
+  R: turn.bind(null, 1),
 };
 
-const parseFinalPosition = (pos, status = "") => {
-  return `${pos.row} ${pos.col} ${pos.dir}${status}`;
+const parseFinalPosition = (position, status = false) => {
+  const roverCondition = status ? " RIP" : "";
+  return `${position.x} ${position.y} ${position.dir}${roverCondition}`;
 };
 
 const isWithInBounds = (minVal, maxVal, val) => val <= maxVal && val >= minVal;
 
-const isLessThanInfinity = (plateau) => {
-  return plateau.maxX < Infinity && plateau.maxY < Infinity;
-}
+const isLessThanInfinity = (plateau) =>
+  plateau.maxX < Infinity && plateau.maxY < Infinity;
 
 export const isSafe = (plateau, presentPosition) => {
   const startVal = isLessThanInfinity(plateau) ? 0 : -Infinity;
-  const xAxis = isWithInBounds(startVal, plateau.maxX, presentPosition.row);
-  const yAxis = isWithInBounds(startVal, plateau.maxY, presentPosition.col);
+  const xAxis = isWithInBounds(startVal, plateau.maxX, presentPosition.x);
+  const yAxis = isWithInBounds(startVal, plateau.maxY, presentPosition.y);
   return xAxis && yAxis;
 };
 
@@ -69,11 +64,11 @@ export const executeInstructions = (position, instructions, plateau) => {
   let roverPosition = parsePosition(position);
 
   for (const instruction of [...instructions]) {
-    const lastPosition = roverPosition;
+    const lastRoverPosition = roverPosition;
     roverPosition = executeInstruction[instruction](roverPosition);
-    
+
     if (!isSafe(plateauBounds, roverPosition)) {
-      return parseFinalPosition(lastPosition, " RIP");
+      return parseFinalPosition(lastRoverPosition, true);
     }
   }
 

@@ -7,16 +7,16 @@ Deno.test("Move freely", () => {
 })
 
 Deno.test("position parse check", () => {
-  assertEquals(fn.parsePosition("0 0 N"), { row: 0, col: 0, dir: "N" });
-  assertEquals(fn.parsePosition("-2 3 E"), { row: -2, col: 3, dir: "E" });
-  assertEquals(fn.parsePosition("-2 -3 E"), { row: -2, col: -3, dir: "E" });
+  assertEquals(fn.parsePosition("0 0 N"), { x: 0, y: 0, dir: "N" });
+  assertEquals(fn.parsePosition("-2 3 E"), { x: -2, y: 3, dir: "E" });
+  assertEquals(fn.parsePosition("-2 -3 E"), { x: -2, y: -3, dir: "E" });
 });
 
 Deno.test("for plateau check if rover is inside", () => {
-  assertEquals(fn.isSafe({maxX:0, maxY:0},{row:0,col:0}), true)
-  assertEquals(fn.isSafe({maxX:1, maxY:0},{row:0,col:0}), true)
-  assertEquals(fn.isSafe({maxX:1, maxY:0},{row:Infinity,col:Infinity}), false)
-  assertEquals(fn.isSafe({maxX:1, maxY:0},{row:-Infinity,col:-Infinity}), false)
+  assertEquals(fn.isSafe({maxX:0, maxY:0},{x:0,y:0}), true)
+  assertEquals(fn.isSafe({maxX:1, maxY:0},{x:0,y:0}), true)
+  assertEquals(fn.isSafe({maxX:1, maxY:0},{x:Infinity,y:Infinity}), false)
+  assertEquals(fn.isSafe({maxX:1, maxY:0},{x:-Infinity,y:-Infinity}), false)
   assertEquals(fn.isSafe({x:Infinity, y:0},{x:10,y:10}), false)
 })
 
