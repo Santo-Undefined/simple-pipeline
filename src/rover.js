@@ -32,7 +32,7 @@ const moveRover = function ({ row, col, dir }) {
   return { ...nextPosition, dir };
 };
 
-const instructionList = {
+const executeInstruction = {
   M: moveRover,
   L: turnL,
   R: turnR,
@@ -45,11 +45,12 @@ const parseFinalPosition = (pos) => {
 export const executeInstructions = (position, instructions) => {
   let pos = parsePosition(position);
 
-  [...instructions].forEach((command) => 
-    (pos = instructionList[command](pos))
-  );
+  const finalPos = [...instructions].reduce((lastPos, command) => {
+    const newPos = executeInstruction[command](lastPos);
+    return newPos
+  }, pos);
 
-  return parseFinalPosition(pos);
+  return parseFinalPosition(finalPos);
 };
 
 console.log(executeInstructions("0 0 E", "M"));
