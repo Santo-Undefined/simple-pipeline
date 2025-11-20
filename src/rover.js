@@ -1,55 +1,59 @@
 export const parsePosition = (initalPosition) => {
-  const position = initalPosition.split(" ");
-  const x = parseInt(position[0]);
-  const y = parseInt(position[1]);
-  const dir = position[2];
-  return { x, y, dir };
+  const [x, y, dir] = initalPosition.split(" ");
+  return { x: parseInt(x), y: parseInt(y), dir };
 };
 
 export const parsePlateauPosition = (position = "") => {
   if (position.length === 0) {
     return { maxX: Infinity, maxY: Infinity };
   }
-  const pos = position.split(" ");
-  const maxX = parseInt(pos[0]);
-  const maxY = parseInt(pos[1]);
-  return { maxX, maxY };
+  const [maxX, maxY] = position.split(" ");
+
+  return { maxX: parseInt(maxX), maxY: parseInt(maxY) };
 };
 
-const turn = function (position, offset) {
-  const directions = ["N", "E", "S", "W", "N"];
+const turn = (position, offset) => {
+  const directions = ["N", "E", "S", "W"];
   const index = (directions.indexOf(position.dir) + offset) % directions.length;
   const dir = directions[index];
-  return { x: position.x, y: position.y, dir: dir };
+  return { ...position, dir };
 };
 
-const move = {
-  N: (x, y) => ({ x, y: y + 1 }),
-  S: (x, y) => ({ x, y: y - 1 }),
-  E: (x, y) => ({ x: x + 1, y }),
-  W: (x, y) => ({ x: x - 1, y }),
+const moves = () => {
+  const directions = {
+    N: (x, y) => ({ x, y: y + 1 }),
+    S: (x, y) => ({ x, y: y - 1 }),
+    E: (x, y) => ({ x: x + 1, y }),
+    W: (x, y) => ({ x: x - 1, y }),
+  };
+  return (direction) => directions[direction];
 };
+const move = moves();
 
 const moveRover = ({ x, y, dir }) => {
-  const nextPosition = move[dir](x, y);
+  const nextPosition = move(dir)(x, y);
   return { ...nextPosition, dir };
 };
 
-const performInstruction = {
-  M: (position) => moveRover(position),
-  L: (position) => turn(position, 3),
-  R: (position) => turn(position, 1),
+const instructionList = () => {
+  const instructions = {
+    M: (position) => moveRover(position),
+    L: (position) => turn(position, 3),
+    R: (position) => turn(position, 1),
+  };
+  return (instruction) => instructions[instruction];
 };
 
-const parseFinalPosition = (position, isOffBounds) => {
+const performInstruction = instructionList();
+
+const parseFinalPosition = ({ x, y, dir }, isOffBounds) => {
   const roverCondition = isOffBounds ? " RIP" : "";
-  return `${position.x} ${position.y} ${position.dir}${roverCondition}`;
+  return `${x} ${y} ${dir}${roverCondition}`;
 };
 
 const isWithInBounds = (min, max, val) => val <= max && val >= min;
-
-const isLessThanInfinity = (plateau) =>
-  plateau.maxX < Infinity && plateau.maxY < Infinity;
+const isLessThanInfinity = ({ maxX, maxY }) =>
+  maxX < Infinity && maxY < Infinity;
 
 export const isSafe = (plateau, presentPosition) => {
   const startVal = isLessThanInfinity(plateau) ? 0 : -Infinity;
@@ -64,7 +68,7 @@ export const executeInstructions = (position, instructions, plateau) => {
 
   for (const instruction of [...instructions]) {
     const lastRoverPosition = roverPosition;
-    roverPosition = performInstruction[instruction](roverPosition);
+    roverPosition = performInstruction(instruction)(roverPosition);
 
     if (!isSafe(plateauBounds, roverPosition)) {
       return parseFinalPosition(lastRoverPosition, true);
