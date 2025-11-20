@@ -42,6 +42,14 @@ const parseFinalPosition = (pos) => {
   return `${pos.row} ${pos.col} ${pos.dir}`;
 };
 
+const isWithInBounds = (minVal, maxVal, val) => val <= maxVal && val >= minVal;
+
+export const isSafe = (presentPosition, plateau) => {
+  const xAxis = isWithInBounds(0, plateau.x, presentPosition.x);
+  const yAxis = isWithInBounds(0, plateau.y, presentPosition.y);
+  return xAxis && yAxis;
+}
+
 export const executeInstructions = (position, instructions) => {
   let pos = parsePosition(position);
 

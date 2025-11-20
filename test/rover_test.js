@@ -24,3 +24,10 @@ Deno.test("position parse check", () => {
   assertEquals(fn.parsePosition("-2 3 E"), { row: -2, col: 3, dir: "E" });
   assertEquals(fn.parsePosition("-2 -3 E"), { row: -2, col: -3, dir: "E" });
 });
+
+Deno.test("for plateau check if rover is inside", () => {
+  assertEquals(fn.isSafe({x:0, y:0},{x:0,y:0}), true)
+  assertEquals(fn.isSafe({x:1, y:0},{x:0,y:0}), false)
+  assertEquals(fn.isSafe({x:1, y:0},{x:Infinity,y:Infinity}), true)
+  assertEquals(fn.isSafe({x:Infinity, y:0},{x:10,y:10}), false)
+})
