@@ -3,20 +3,7 @@ import { executeInstructions } from '../src/rover.js';
 import * as fn from "../src/rover.js";
 
 Deno.test("Move freely", () => {
-  assertEquals(executeInstructions('0 0 E', 'LMRMMMR'), "3 1 S")
-})
-
-Deno.test('Just move in place', () => {
-  assertEquals(fn.executeInstructions('0 0 N', 'L'), '0 0 W');
-  assertEquals(fn.executeInstructions('0 0 N', 'LLLL'), '0 0 N');
-  assertEquals(fn.executeInstructions('0 0 S', 'R'), '0 0 W');
-  assertEquals(fn.executeInstructions('0 0 S', 'RL'), '0 0 S');
-});
-
-Deno.test("Move one step", () => {
-  assertEquals(fn.executeInstructions('0 0 N', 'M'), '0 1 N')
-  assertEquals(fn.executeInstructions('0 0 N', 'LLM'), '0 -1 S')
-  assertEquals(fn.executeInstructions('0 0 N', 'LLMRR'), '0 -1 N')
+  assertEquals(executeInstructions('0 0 E', 'LMRMMMR', ""), "3 1 S")
 })
 
 Deno.test("position parse check", () => {
@@ -26,8 +13,28 @@ Deno.test("position parse check", () => {
 });
 
 Deno.test("for plateau check if rover is inside", () => {
-  assertEquals(fn.isSafe({x:0, y:0},{x:0,y:0}), true)
-  assertEquals(fn.isSafe({x:1, y:0},{x:0,y:0}), false)
-  assertEquals(fn.isSafe({x:1, y:0},{x:Infinity,y:Infinity}), true)
+  assertEquals(fn.isSafe({maxX:0, maxY:0},{row:0,col:0}), true)
+  assertEquals(fn.isSafe({maxX:1, maxY:0},{row:0,col:0}), true)
+  assertEquals(fn.isSafe({maxX:1, maxY:0},{row:Infinity,col:Infinity}), false)
+  assertEquals(fn.isSafe({maxX:1, maxY:0},{row:-Infinity,col:-Infinity}), false)
   assertEquals(fn.isSafe({x:Infinity, y:0},{x:10,y:10}), false)
+})
+
+Deno.test("rotate in  place", () => {
+  assertEquals(fn.executeInstructions("0 0 N", "RRRR", "1 1"), "0 0 N")
+  assertEquals(fn.executeInstructions("0 0 N", "LRLR", "1 1"), "0 0 N")
+  assertEquals(fn.executeInstructions("0 0 N", "LRLR", ""), "0 0 N")
+})
+
+Deno.test("Move", () => {
+  assertEquals(fn.executeInstructions("0 0 N", "M", "1 1"), "0 1 N")
+  assertEquals(fn.executeInstructions("0 0 N", "MM", "2 2"), "0 2 N")
+  assertEquals(fn.executeInstructions("1 1 E", "MMLMMM", "5 5"), "3 4 N")
+})
+
+Deno.test("Move out of bounds", () => {
+  assertEquals(fn.executeInstructions("0 0 N", "LMRM", ""), "0 0 W RIP")
+  assertEquals(fn.executeInstructions("5 5 N", "M", "5 5"), "5 5 N RIP")
+  assertEquals(fn.executeInstructions("0 0 S", "M", "5 5"), "0 0 S RIP")
+  assertEquals(fn.executeInstructions("2 2 N", "MMMRMM", "4 4"), "2 4 N RIP")
 })
