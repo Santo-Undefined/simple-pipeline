@@ -32,6 +32,7 @@ Deno.test("Move", () => {
   assertEquals(fn.executeInstructions("1 1 E", "MMLMMM", "5 5"), "3 4 N")
   assertEquals(fn.executeInstructions("0 0 N", "LMRM", ""), "-1 1 N")
   assertEquals(fn.executeInstructions("2 2 N", "MMMRMM"), "4 5 E")
+  assertEquals(fn.executeInstructions("2 2 N", ""), "2 2 N")
 
 })
 
