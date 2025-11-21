@@ -1,3 +1,8 @@
+const dbg = (x) => {
+  console.log("debug prob", x);
+  return x;
+};
+
 const parseFinalPosition = ({ x, y, dir }, isOffBounds) => {
   const roverCondition = isOffBounds ? " RIP" : "";
   return `${x} ${y} ${dir}${roverCondition}`;
@@ -8,7 +13,7 @@ const parseInputText = (text) => {
   const plateauBounds = parsePlateauPosition(splittedText[0]);
   const roverCount = parseInt(splittedText[1]);
   const roverCountIndex = 1;
-  const startIndexOfInstruction = splittedText.indexOf("");
+  const startIndexOfInstruction = splittedText.lastIndexOf("");
   const rovers = [];
 
   for (let index = 1; index <= roverCount; index++) {
@@ -111,5 +116,3 @@ export const executeInstructions = (text) => {
   });
   return finalMessages.join("\n");
 };
-
-// "5 5\n2\n0 0 N\n1 1 S\n\nLM\nLM"

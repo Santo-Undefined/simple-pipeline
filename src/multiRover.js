@@ -98,6 +98,10 @@ export const executeInstructions = (text) => {
 };
 
 // "5 5\n2\n0 0 N\n1 1 S\n\nLM\nLM"
+// [ "5 5", "2", "0 0 N", "1 1 S", "", "LM", "LM" ]
+
+// "\n2\n0 0 N\n1 1 S\n\nLM\nLM"
+// [ "", "2", "0 0 N", "1 1 S", "", "LM", "LM" ]
 
 const parseInputText = (text) => {
   const splittedText = text.split("\n");
