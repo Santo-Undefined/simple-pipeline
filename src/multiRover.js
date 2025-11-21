@@ -84,16 +84,14 @@ const executeRoverInstuctions = (position, instructions, plateau) => {
 export const executeInstructions = (text) => {
   const roverPrograms = parseInputText(text);
   const plateauBounds = roverPrograms.plateau;
-  const finalMessages = [];
 
-  roverPrograms.rovers.forEach((rover) => {
-    const roverResponse = executeRoverInstuctions(
+  const finalMessages = roverPrograms.rovers.map((rover) =>
+    executeRoverInstuctions(
       rover.position,
       rover.instructions,
       plateauBounds,
-    );
-    finalMessages.push(roverResponse);
-  });
+    )
+  );
   return finalMessages.join("\n");
 };
 
@@ -104,21 +102,14 @@ export const executeInstructions = (text) => {
 // [ "", "2", "0 0 N", "1 1 S", "", "LM", "LM" ]
 
 const parseInputText = (text) => {
-  const splittedText = text.split("\n");
-  const plateauBounds = parsePlateauPosition(splittedText[0]);
-  const roverCount = parseInt(splittedText[1]);
-  const roverCountIndex = 1;
-  const startIndexOfInstruction = splittedText.indexOf("");
-  const rovers = [];
+  const [plateau, roverCount, ...roverInfo] = text.split("\n")
+  const plateauBounds = parsePlateauPosition(plateau);
+  const roverPositions= roverInfo.slice(0, roverInfo.indexOf(""));
+  const roverInstructions= roverInfo.slice(roverInfo.indexOf("") + 1);
 
-  for (let index = 1; index <= roverCount; index++) {
-    const roverPosition = splittedText[roverCountIndex + index];
-    const instruction = splittedText[startIndexOfInstruction + index];
-    rovers.push({ 
-      position: parsePosition(roverPosition), 
-      instructions: instruction 
-    });
-  }
+  const rovers = roverPositions.map((position, index) => {
+    return {position: position, instructions: roverInstructions[index]}
+  })
 
   return { plateau: plateauBounds, rovers: rovers };
 };

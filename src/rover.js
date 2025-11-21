@@ -9,23 +9,17 @@ const parseFinalPosition = ({ x, y, dir }, isOffBounds) => {
 };
 
 const parseInputText = (text) => {
-  const splittedText = text.split("\n");
-  const plateauBounds = parsePlateauPosition(splittedText[0]);
-  const roverCount = parseInt(splittedText[1]);
-  const roverCountIndex = 1;
-  const startIndexOfInstruction = splittedText.lastIndexOf("");
-  const rovers = [];
+  const [plateau, roverCount, ...roverInfo] = text.split("\n");
+  const plateauBounds = parsePlateauPosition(plateau);
+  const roverPositions = roverInfo.slice(0, roverInfo.indexOf(""));
+  const roverInstructions = roverInfo.slice(roverInfo.indexOf("") + 1);
 
-  for (let index = 1; index <= roverCount; index++) {
-    const roverPosition = splittedText[roverCountIndex + index];
-    const instruction = splittedText[startIndexOfInstruction + index];
-    rovers.push({
-      position: parsePosition(roverPosition),
-      instructions: instruction,
-    });
-  }
+  const rovers = roverPositions.map((position, index) =>  ({
+      position: parsePosition(position),
+      instructions: roverInstructions[index],    
+  }));
 
-  return { plateau: plateauBounds, rovers: rovers };
+  return { plateauBounds: plateauBounds, rovers: rovers };
 };
 
 export const parsePosition = (initalPosition) => {
@@ -103,9 +97,9 @@ const executeRoverInstuctions = (position, instructions, plateau) => {
 
 export const executeInstructions = (text) => {
   const roverPrograms = parseInputText(text);
-  const plateauBounds = roverPrograms.plateau;
+  const {plateauBounds, rovers} = roverPrograms;
 
-  const finalMessages = roverPrograms.rovers.map((rover) =>
+  const finalMessages = rovers.map((rover) =>
     executeRoverInstuctions(
       rover.position,
       rover.instructions,
