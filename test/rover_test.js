@@ -44,3 +44,7 @@ Deno.test("Move out of bounds", () => {
   assertEquals(fn.executeInstructions("2 2 N", "MMMRMM", ""), "4 5 E")
   assertEquals(fn.executeInstructions("0 0 S", "M"), "0 -1 S");
 })
+
+Deno.test.only("MUlti-rover", () => {
+  assertEquals(fn.executeInstructions("5 5\n2\n0 0 N\n1 1 S\n\nLM\nLM"),"0 0 W RIP\n2 1 E");
+})

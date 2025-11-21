@@ -81,11 +81,12 @@ const executeRoverInstuctions = (position, instructions, plateau) => {
   return parseFinalPosition(roverPosition, false);
 };
 
-export const executeInstructions = (inputObj) => {
-  const plateauBounds = inputObj.plateau;
+export const executeInstructions = (text) => {
+  const roverPrograms = parseInputText(text);
+  const plateauBounds = roverPrograms.plateau;
   const finalMessages = [];
 
-  inputObj.rovres.forEach((rover) => {
+  roverPrograms.rovers.forEach((rover) => {
     const roverResponse = executeRoverInstuctions(
       rover.position,
       rover.instructions,
@@ -96,14 +97,39 @@ export const executeInstructions = (inputObj) => {
   return finalMessages.join("\n");
 };
 
-const inputObj = {
-  plateau: { maxX: 5, maxY: 5 },
-  roverCount: 3,
-  rovres: [
-    { position: { x: 0, y: 0, dir: "N" }, instructions: "MMM" },
-    { position: { x: 1, y: 1, dir: "S" }, instructions: "MM" },
-    { position: { x: 0, y: 2, dir: "N" }, instructions: "MMR" },
-  ],
+// "5 5\n2\n0 0 N\n1 1 S\n\nLM\nLM"
+
+const parseInputText = (text) => {
+  const splittedText = text.split("\n");
+  const plateauBounds = parsePlateauPosition(splittedText[0]);
+  const roverCount = parseInt(splittedText[1]);
+  const roverCountIndex = 1;
+  const startIndexOfInstruction = splittedText.indexOf("");
+  const rovers = [];
+
+  for (let index = 1; index <= roverCount; index++) {
+    const roverPosition = splittedText[roverCountIndex + index];
+    const instruction = splittedText[startIndexOfInstruction + index];
+    rovers.push({ 
+      position: parsePosition(roverPosition), 
+      instructions: instruction 
+    });
+  }
+
+  return { plateau: plateauBounds, rovers: rovers };
 };
 
-console.log(executeInstructions(inputObj));
+// const inputObj = {
+//   plateau: { maxX: 5, maxY: 5 },
+//   roverCount: 3,
+//   rovres: [
+//     { position: { x: 0, y: 0, dir: "N" }, instructions: "MMM" },
+//     { position: { x: 1, y: 1, dir: "S" }, instructions: "MM" },
+//     { position: { x: 0, y: 2, dir: "N" }, instructions: "MM" },
+//   ],
+// };
+
+console.log(executeInstructions("5 5\n2\n0 0 N\n1 1 S\n\nLM\nLM"));
+
+console.log(parseInputText("5 5\n2\n0 0 N\n1 1 S\n\nLM\nLM"))
+

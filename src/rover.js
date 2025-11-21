@@ -1,3 +1,28 @@
+const parseFinalPosition = ({ x, y, dir }, isOffBounds) => {
+  const roverCondition = isOffBounds ? " RIP" : "";
+  return `${x} ${y} ${dir}${roverCondition}`;
+};
+
+const parseInputText = (text) => {
+  const splittedText = text.split("\n");
+  const plateauBounds = parsePlateauPosition(splittedText[0]);
+  const roverCount = parseInt(splittedText[1]);
+  const roverCountIndex = 1;
+  const startIndexOfInstruction = splittedText.indexOf("");
+  const rovers = [];
+
+  for (let index = 1; index <= roverCount; index++) {
+    const roverPosition = splittedText[roverCountIndex + index];
+    const instruction = splittedText[startIndexOfInstruction + index];
+    rovers.push({
+      position: parsePosition(roverPosition),
+      instructions: instruction,
+    });
+  }
+
+  return { plateau: plateauBounds, rovers: rovers };
+};
+
 export const parsePosition = (initalPosition) => {
   const [x, y, dir] = initalPosition.split(" ");
   return { x: parseInt(x), y: parseInt(y), dir };
@@ -12,9 +37,14 @@ export const parsePlateauPosition = (position = "") => {
   return { maxX: parseInt(maxX), maxY: parseInt(maxY) };
 };
 
-const parseFinalPosition = ({ x, y, dir }, isOffBounds) => {
-  const roverCondition = isOffBounds ? " RIP" : "";
-  return `${x} ${y} ${dir}${roverCondition}`;
+const isWithInBounds = (min, max, val) => val <= max && val >= min;
+const isLessThanInfinity = (x, y) => x < Infinity && y < Infinity;
+
+export const isSafe = ({ maxX, maxY }, { x, y }) => {
+  const startVal = isLessThanInfinity(maxX, maxY) ? 0 : -Infinity;
+  const isXvalid = isWithInBounds(startVal, maxX, x);
+  const isYvalid = isWithInBounds(startVal, maxY, y);
+  return isXvalid && isYvalid;
 };
 
 const turn = (position, offset) => {
@@ -51,19 +81,9 @@ const instructionList = () => {
 
 const performInstruction = instructionList();
 
-const isWithInBounds = (min, max, val) => val <= max && val >= min;
-const isLessThanInfinity = (x, y) => x < Infinity && y < Infinity;
-
-export const isSafe = ({ maxX, maxY }, { x, y }) => {
-  const startVal = isLessThanInfinity(maxX, maxY) ? 0 : -Infinity;
-  const isXvalid = isWithInBounds(startVal, maxX, x);
-  const isYvalid = isWithInBounds(startVal, maxY, y);
-  return isXvalid && isYvalid;
-};
-
-export const executeInstructions = (position, instructions, plateau) => {
-  const plateauBounds = parsePlateauPosition(plateau);
-  let roverPosition = parsePosition(position);
+const executeRoverInstuctions = (position, instructions, plateau) => {
+  const plateauBounds = plateau;
+  let roverPosition = position;
 
   for (const instruction of [...instructions]) {
     const lastRoverPosition = roverPosition;
@@ -75,3 +95,21 @@ export const executeInstructions = (position, instructions, plateau) => {
   }
   return parseFinalPosition(roverPosition, false);
 };
+
+export const executeInstructions = (text) => {
+  const roverPrograms = parseInputText(text);
+  const plateauBounds = roverPrograms.plateau;
+  const finalMessages = [];
+
+  roverPrograms.rovers.forEach((rover) => {
+    const roverResponse = executeRoverInstuctions(
+      rover.position,
+      rover.instructions,
+      plateauBounds,
+    );
+    finalMessages.push(roverResponse);
+  });
+  return finalMessages.join("\n");
+};
+
+// "5 5\n2\n0 0 N\n1 1 S\n\nLM\nLM"
