@@ -104,15 +104,13 @@ const executeRoverInstuctions = (position, instructions, plateau) => {
 export const executeInstructions = (text) => {
   const roverPrograms = parseInputText(text);
   const plateauBounds = roverPrograms.plateau;
-  const finalMessages = [];
 
-  roverPrograms.rovers.forEach((rover) => {
-    const roverResponse = executeRoverInstuctions(
+  const finalMessages = roverPrograms.rovers.map((rover) =>
+    executeRoverInstuctions(
       rover.position,
       rover.instructions,
       plateauBounds,
-    );
-    finalMessages.push(roverResponse);
-  });
+    )
+  );
   return finalMessages.join("\n");
 };
