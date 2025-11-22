@@ -104,37 +104,23 @@ Deno.test("perform simple Instruction turnL", () => {
 });
 
 Deno.test("excute simple instuctions", () => {
-  assertEquals(fns.executeInstructions({ x: 0, y: 0, heading: "N" }, "L"), {
-    x: 0,
-    y: 0,
-    heading: "W",
-  })
+  assertEquals(fns.executeInstructions("0 0 N", "L"), "0 0 W")
 })
 Deno.test("excute multiple left turn instuctions", () => {
-  assertEquals(fns.executeInstructions({ x: 0, y: 0, heading: "N" }, "LLLL"), {
-    x: 0,
-    y: 0,
-    heading: "N",
-  })
+  assertEquals(fns.executeInstructions("0 0 N", "LLLL"), "0 0 N")
 })
 Deno.test("excute multiple right turn instuctions", () => {
-  assertEquals(fns.executeInstructions({ x: 0, y: 0, heading: "N" }, "RRRR"), {
-    x: 0,
-    y: 0,
-    heading: "N",
-  })
+  assertEquals(fns.executeInstructions("0 0 N", "RRRR"), "0 0 N")
 })
 Deno.test("excute multiple move instuctions", () => {
-  assertEquals(fns.executeInstructions({ x: 0, y: 0, heading: "N" }, "MMMM"), {
-    x: 0,
-    y: 4,
-    heading: "N",
-  })
+  assertEquals(fns.executeInstructions("0 0 N", "MMMM"), "0 4 N")
 })
 Deno.test("excute multiple random instuctions", () => {
-  assertEquals(fns.executeInstructions({ x: 0, y: 0, heading: "N" }, "MLMLMLML"), {
-    x: 0,
-    y: 0,
-    heading: "N",
-  })
+  assertEquals(fns.executeInstructions("0 0 N", "MLMLMLML"), "0 0 N")
+})
+Deno.test("parse Input", () => {
+  assertEquals(fns.parsePosition("0 0 N"), {x:0, y:0, heading:"N"})
+})
+Deno.test("Make final message", () => {
+  assertEquals(fns.makeFinalMessage({x:1,y:1,heading:"N"}), "1 1 N")
 })

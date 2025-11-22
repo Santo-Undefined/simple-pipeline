@@ -32,8 +32,21 @@ export const performInstruction = (position, command) => {
   return commands[command](position);
 };
 
+export const parsePosition = (position) => {
+  const [x, y, heading] = position.split(" ");
+  return { x: parseInt(x), y: parseInt(y), heading };
+};
+
+export const makeFinalMessage = ({ x, y, heading }) => {
+  return `${x} ${y} ${heading}`;
+};
+
 export const executeInstructions = (position, instructions) => {
-  return [...instructions].reduce((updatedPosition, instruction) => {
-    return performInstruction(updatedPosition, instruction);
-  }, position);
+  const parsedPosition = parsePosition(position);
+  const finalPositon = [...instructions].reduce(
+    (updatedPosition, instruction) =>
+      performInstruction(updatedPosition, instruction),
+    parsedPosition,
+  );
+  return makeFinalMessage(finalPositon);
 };
