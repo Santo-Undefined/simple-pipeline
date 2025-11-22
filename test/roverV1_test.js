@@ -28,7 +28,7 @@ Deno.test("Move forward west", () =>
     y: 0,
     heading: "W",
   }));
-Deno.test("Rover trun Right from north", () => {
+Deno.test("Trun right from north", () => {
   assertEquals(
     fns.turnR({ x: 1, y: 1, heading: "N" }),
     { x: 1, y: 1, heading: "E" },
