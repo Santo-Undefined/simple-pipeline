@@ -101,4 +101,40 @@ Deno.test("perform simple Instruction turnL", () => {
     y: 0,
     heading: "W",
   })
+});
+
+Deno.test("excute simple instuctions", () => {
+  assertEquals(fns.executeInstructions({ x: 0, y: 0, heading: "N" }, "L"), {
+    x: 0,
+    y: 0,
+    heading: "W",
+  })
+})
+Deno.test("excute multiple left turn instuctions", () => {
+  assertEquals(fns.executeInstructions({ x: 0, y: 0, heading: "N" }, "LLLL"), {
+    x: 0,
+    y: 0,
+    heading: "N",
+  })
+})
+Deno.test("excute multiple right turn instuctions", () => {
+  assertEquals(fns.executeInstructions({ x: 0, y: 0, heading: "N" }, "RRRR"), {
+    x: 0,
+    y: 0,
+    heading: "N",
+  })
+})
+Deno.test("excute multiple move instuctions", () => {
+  assertEquals(fns.executeInstructions({ x: 0, y: 0, heading: "N" }, "MMMM"), {
+    x: 0,
+    y: 4,
+    heading: "N",
+  })
+})
+Deno.test("excute multiple random instuctions", () => {
+  assertEquals(fns.executeInstructions({ x: 0, y: 0, heading: "N" }, "MLMLMLML"), {
+    x: 0,
+    y: 0,
+    heading: "N",
+  })
 })

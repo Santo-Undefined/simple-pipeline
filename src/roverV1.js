@@ -31,3 +31,9 @@ export const performInstruction = (position, command) => {
   };
   return commands[command](position);
 };
+
+export const executeInstructions = (position, instructions) => {
+  return [...instructions].reduce((updatedPosition, instruction) => {
+    return performInstruction(updatedPosition, instruction);
+  }, position);
+};

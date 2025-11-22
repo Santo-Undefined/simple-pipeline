@@ -14,9 +14,9 @@ const parseInputText = (text) => {
   const roverPositions = roverInfo.slice(0, roverInfo.indexOf(""));
   const roverInstructions = roverInfo.slice(roverInfo.indexOf("") + 1);
 
-  const rovers = roverPositions.map((position, index) =>  ({
-      position: parsePosition(position),
-      instructions: roverInstructions[index],    
+  const rovers = roverPositions.map((position, index) => ({
+    position: parsePosition(position),
+    instructions: roverInstructions[index],
   }));
 
   return { plateauBounds: plateauBounds, rovers: rovers };
@@ -97,7 +97,7 @@ const executeRoverInstuctions = (position, instructions, plateau) => {
 
 export const executeInstructions = (text) => {
   const roverPrograms = parseInputText(text);
-  const {plateauBounds, rovers} = roverPrograms;
+  const { plateauBounds, rovers } = roverPrograms;
 
   const finalMessages = rovers.map((rover) =>
     executeRoverInstuctions(
