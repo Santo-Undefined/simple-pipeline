@@ -22,3 +22,12 @@ export const turnR = ({ heading, ...rest }) => {
 export const turnL = ({ heading, ...rest }) => {
   return { heading: compass[heading].L, ...rest };
 };
+
+export const performInstruction = (position, command) => {
+  const commands = {
+    M: move,
+    L: turnL,
+    R: turnR,
+  };
+  return commands[command](position);
+};

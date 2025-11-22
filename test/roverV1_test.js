@@ -80,3 +80,25 @@ Deno.test("Turn Left from west", () =>
     y: 0,
     heading: "S",
   }));
+
+Deno.test("perform simple Instruction Move", () => {
+  assertEquals(fns.performInstruction({ x: 0, y: 0, heading: "N" }, "M"), {
+    x: 0,
+    y: 1,
+    heading: "N",
+  })
+})
+Deno.test("perform simple Instruction turnR", () => {
+  assertEquals(fns.performInstruction({ x: 0, y: 0, heading: "N" }, "R"), {
+    x: 0,
+    y: 0,
+    heading: "E",
+  })
+})
+Deno.test("perform simple Instruction turnL", () => {
+  assertEquals(fns.performInstruction({ x: 0, y: 0, heading: "N" }, "L"), {
+    x: 0,
+    y: 0,
+    heading: "W",
+  })
+})
