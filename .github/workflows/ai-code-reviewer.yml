@@ -1,0 +1,44 @@
+name: AI PR Code Reviewer
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Get PR Diff
+        id: diff
+        run: |
+          # Fetch changes between the target base branch and the current PR head
+          git fetch origin ${{ github.base_ref }}
+          git diff origin/${{ github.base_ref }}...HEAD > pr_diff.txt
+
+          # Check if diff is empty
+          if [ ! -s pr_diff.txt ]; then
+            echo "No code changes detected."
+            exit 0
+          fi
+
+      - name: Run AI Reviewer Script
+        env:
+          OPENROUTER_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.PR_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          REPO_NAME: ${{ github.repository }}
+        run: node .github/scripts/ai-review.mjs
