@@ -41,4 +41,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.PR_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO_NAME: ${{ github.repository }}
-        run: npm i && node .github/scripts/ai-review.mjs
+        run: npm ci --prefix .github/scripts && node .github/scripts/ai-review.mjs
