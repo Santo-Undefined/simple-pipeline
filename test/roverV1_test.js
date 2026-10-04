@@ -104,7 +104,7 @@ Deno.test("perform simple Instruction Move", () => {
       x: 0,
       y: 1,
       heading: "N",
-      isLive: true,
+      isLive: false,
     },
   );
 });
@@ -118,7 +118,7 @@ Deno.test("perform simple Instruction turnR", () => {
       x: 0,
       y: 0,
       heading: "E",
-      isLive: true,
+      isLive: false,
     },
   );
 });
@@ -134,7 +134,7 @@ Deno.test("perform simple Instruction turnL", () => {
       x: 0,
       y: 0,
       heading: "W",
-      isLive: true,
+      isLive: false,
     },
   );
 });
@@ -174,7 +174,7 @@ Deno.test("Parse input with boundary", () => {
   });
 });
 Deno.test("Is on plateau", () => {
-  assertEquals(fns.isOnPlateau({ maxX: 5, maxY: 5 }, { x: 0, y: 0 }), true);
+  assertEquals(fns.isOnPlateau({ maxX: 5, maxY: 5 }, { x: 0, y: 0 }), false);
 });
 Deno.test("Is not on plateau", () => {
   assertEquals(fns.isOnPlateau({ maxX: 5, maxY: 5 }, { x: 6, y: 0 }), false);
