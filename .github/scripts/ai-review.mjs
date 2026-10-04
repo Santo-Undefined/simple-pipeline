@@ -19,8 +19,15 @@ Focus on:
 
 Format your response strictly using clean GitHub-flavored Markdown. Group comments logically by file, and provide code blocks with language annotations. Keep feedback concise, actionable, and constructive.`;
 
+const openRouterApiKey = process.env.OPENROUTER_API_KEY;
+if (!openRouterApiKey) {
+  throw new Error(
+    "OPENROUTER_API_KEY is missing. Configure it as a GitHub Actions secret.",
+  );
+}
+
 const openrouter = new OpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY,
+  apiKey: openRouterApiKey,
 });
 
 async function getReview() {
