@@ -19,7 +19,7 @@ Focus on:
 
 Format your response strictly using clean GitHub-flavored Markdown. Group comments logically by file, and provide code blocks with language annotations. Keep feedback concise, actionable, and constructive.`;
 
-const openRouterApiKey = process.env.OPENAI_API_KEY;
+const openRouterApiKey = process.env.OPENROUTER_API_KEY;
 if (!openRouterApiKey) {
   throw new Error(
     "GITHUB token missing is missing. Configure it as a GitHub Actions secret.",
