@@ -38,7 +38,7 @@ jobs:
       - name: Run AI Reviewer Script
         env:
           OPENROUTER_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          GITHUB_TOKEN: ${{ secrets.PR_TOKEN }}
+          PR_COMMENT_TOKEN: ${{ secrets.PR_COMMENT_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           REPO_NAME: ${{ github.repository }}
         run: npm ci --prefix .github/scripts && node .github/scripts/ai-review.mjs

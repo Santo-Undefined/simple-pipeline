@@ -67,14 +67,13 @@ async function getReview() {
 }
 
 async function postComment(reviewBody) {
-  const { GITHUB_TOKEN, REPO_NAME, PR_NUMBER } = process.env;
-  console.log({ GITHUB_TOKEN, REPO_NAME, PR_NUMBER });
+  const { PR_COMMENT_TOKEN, REPO_NAME, PR_NUMBER } = process.env;
   const url =
     `https://api.github.com/repos/${REPO_NAME}/issues/${PR_NUMBER}/comments`;
   const res = await fetch(url, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      Authorization: `Bearer ${PR_COMMENT_TOKEN}`,
       Accept: "application/vnd.github+json",
       "Content-Type": "application/json",
     },
