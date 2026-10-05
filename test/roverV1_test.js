@@ -185,6 +185,9 @@ Deno.test("Is not on plateau neagtive coords", () => {
 Deno.test("Is not on plateau neagtive coords 2", () => {
   assertEquals(fns.isOnPlateau({ maxX: 5, maxY: 5 }, { x: -1, y: 0 }), false);
 });
+Deno.test("Is not on plateau neagtive coords 2", () => {
+  assertEquals(fns.isOnPlateau({ maxX: 5, maxY: 5 }, { x: -1, y: 0 }), false);
+});
 // Deno.test("when fallen off the plateau", () => {
 //   assertEquals(fns.executeInstructions("0 0 S", "M", "5 5"), "0 0 S RIP");
 // });

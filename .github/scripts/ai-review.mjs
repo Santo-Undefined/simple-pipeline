@@ -19,8 +19,15 @@ Focus on:
 
 Format your response strictly using clean GitHub-flavored Markdown. Group comments logically by file, and provide code blocks with language annotations. Keep feedback concise, actionable, and constructive.`;
 
+const openRouterApiKey = process.env.OPENROUTER_API_KEY;
+if (!openRouterApiKey) {
+  throw new Error(
+    "GITHUB token missing is missing. Configure it as a GitHub Actions secret.",
+  );
+}
+
 const openrouter = new OpenRouter({
-  apiKey: process.env.OPENROUTER_API_KEY,
+  apiKey: openRouterApiKey,
 });
 
 async function getReview() {
@@ -60,14 +67,14 @@ async function getReview() {
 }
 
 async function postComment(reviewBody) {
-  const { GITHUB_TOKEN, REPO_NAME, PR_NUMBER } = process.env;
-
+  const { PR_COMMENT_TOKEN, REPO_NAME, PR_NUMBER } = process.env;
+  console.log({ REPO_NAME, PR_NUMBER });
   const url =
     `https://api.github.com/repos/${REPO_NAME}/issues/${PR_NUMBER}/comments`;
   const res = await fetch(url, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${GITHUB_TOKEN}`,
+      Authorization: `Bearer ${PR_COMMENT_TOKEN}`,
       Accept: "application/vnd.github+json",
       "Content-Type": "application/json",
     },
