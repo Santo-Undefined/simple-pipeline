@@ -19,49 +19,49 @@ Focus on:
 
 Format your response strictly using clean GitHub-flavored Markdown. Group comments logically by file, and provide code blocks with language annotations. Keep feedback concise, actionable, and constructive.`;
 
-const openRouterApiKey = process.env.PR_COMMENT_TOKEN;
+const openRouterApiKey = process.env.OPENAI_API_KEY;
 if (!openRouterApiKey) {
   throw new Error(
     "GITHUB token missing is missing. Configure it as a GitHub Actions secret.",
   );
 }
 
-// const openrouter = new OpenRouter({
-//   apiKey: openRouterApiKey,
-// });
+const openrouter = new OpenRouter({
+  apiKey: openRouterApiKey,
+});
 
 async function getReview() {
-  // const stream = await openrouter.chat.send({
-  //   chatRequest: {
-  //     model: process.env.OPENROUTER_MODEL ||
-  //       "nvidia/nemotron-3-ultra-550b-a55b:free",
-  //     messages: [
-  //       { role: "system", content: systemPrompt },
-  //       {
-  //         role: "user",
-  //         content:
-  //           `Here is the pull request diff:\n\`\`\`diff\n${truncatedDiff}\n\`\`\``,
-  //       },
-  //     ],
-  //     stream: true,
-  //   },
-  // });
+  const stream = await openrouter.chat.send({
+    chatRequest: {
+      model: process.env.OPENROUTER_MODEL ||
+        "nvidia/nemotron-3-ultra-550b-a55b:free",
+      messages: [
+        { role: "system", content: systemPrompt },
+        {
+          role: "user",
+          content:
+            `Here is the pull request diff:\n\`\`\`diff\n${truncatedDiff}\n\`\`\``,
+        },
+      ],
+      stream: true,
+    },
+  });
 
-  let reviewContent = "hello there";
-  // for await (const chunk of stream) {
-  //   const content = chunk.choices[0]?.delta?.content;
-  //   if (content) {
-  //     reviewContent += content;
-  //     process.stdout.write(content);
-  //   }
+  let reviewContent = "";
+  for await (const chunk of stream) {
+    const content = chunk.choices[0]?.delta?.content;
+    if (content) {
+      reviewContent += content;
+      process.stdout.write(content);
+    }
 
-  //   if (chunk.usage?.completionTokensDetails?.reasoningTokens) {
-  //     console.log(
-  //       "\nReasoning tokens:",
-  //       chunk.usage.completionTokensDetails.reasoningTokens,
-  //     );
-  //   }
-  // }
+    if (chunk.usage?.completionTokensDetails?.reasoningTokens) {
+      console.log(
+        "\nReasoning tokens:",
+        chunk.usage.completionTokensDetails.reasoningTokens,
+      );
+    }
+  }
 
   return reviewContent;
 }
